@@ -4,6 +4,6 @@ create_bow <- function(crps){
     # Takes a corpus and returns a bag of words
     bow <- dfm(corpus(crps),
                tolower = TRUE,
-               stem = TRUE,
+               stem = FALSE,
                remove = stopwords())
 }
