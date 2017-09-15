@@ -5,6 +5,7 @@ source("model/evaluate_model.R")
 
 SPAM_PATH <- "./data/spamassassin/*"
 
+set.seed(2017)
 
 # Read texts
 spam_corpus <- get_corpus(SPAM_PATH)
@@ -23,6 +24,8 @@ test_labels <- all_labels[-train]
 train_bow <- create_bow(train_corpus)
 test_bow <- dfm_select(create_bow(test_corpus), train_bow)
 
-nb_pred <- naive_bayes(train_bow, train_labels, test_bow)
+model.nb <- naive_bayes(train_bow, train_labels, test_bow)
 
-evaluate_model(nb_pred$nb.predicted, test_labels)
+pred.nb <- predict(model.nb, newdata = test_bow)
+
+evaluate_model(pred.nb$nb.predicted, test_labels)
