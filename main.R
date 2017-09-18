@@ -2,6 +2,7 @@ source("clean/get_corpus.R")
 source("clean/create_bow.R")
 source("model/naive_bayes.R")
 source("model/evaluate_model.R")
+source("model/support_vector_machines.R")
 
 SPAM_PATH <- "./data/spamassassin/*"
 
@@ -36,17 +37,18 @@ evaluate_model(pred.nb$nb.predicted, test_labels)
 # ====
 # SVM 
 
-library(e1071)
+#library(e1071)
 
-x_tran <- dfm_trim(train_bow, min_docfreq = 0.05, max_docfreq = 0.9)
+#x_tran <- dfm_trim(train_bow, min_docfreq = 0.05, max_docfreq = 0.9)
 x_test <- as.data.frame(dfm_select(create_bow(test_corpus), x_tran))
 
-x_tran <- convert(x_tran, "data.frame")
-x_tran$rotulo = train_labels
+#x_tran <- convert(x_tran, "data.frame")
+#x_tran$rotulo = train_labels
 
+model.svm <- support_vector_machines(train_bow, train_labels, test_corpus)
 
-svm.model <- svm(rotulo ~ ., data = x_tran, type = "C-classification")
-svm.prediction <- predict(svm.model, x_test)
+#svm.model <- svm(rotulo ~ ., data = x_tran, type = "C-classification")
+svm.prediction <- predict(model.svm, newdata = x_test)
 
 table(svm.prediction, test_labels)
 
