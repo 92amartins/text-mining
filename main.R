@@ -5,6 +5,8 @@ source("model/evaluate_model.R")
 
 SPAM_PATH <- "./data/spamassassin/*"
 
+set.seed(2017)
+
 # Read texts
 spam_corpus <- get_corpus(SPAM_PATH)
 
@@ -25,9 +27,11 @@ test_bow <- dfm_select(create_bow(test_corpus), train_bow)
 # ====
 # Naive Bayes 
 
-nb_pred <- naive_bayes(train_bow, train_labels, test_bow)
-evaluate_model(nb_pred$nb.predicted, test_labels)
+model.nb <- naive_bayes(train_bow, train_labels, test_bow)
 
+pred.nb <- predict(model.nb, newdata = test_bow)
+
+evaluate_model(pred.nb$nb.predicted, test_labels)
 
 # ====
 # SVM 
@@ -40,7 +44,6 @@ x_test <- as.data.frame(dfm_select(create_bow(test_corpus), x_tran))
 x_tran <- convert(x_tran, "data.frame")
 x_tran$rotulo = train_labels
 
-#x_tran_bow <- create_bow(train_corpus)
 
 svm.model <- svm(rotulo ~ ., data = x_tran, type = "C-classification")
 svm.prediction <- predict(svm.model, x_test)
@@ -48,3 +51,7 @@ svm.prediction <- predict(svm.model, x_test)
 table(svm.prediction, test_labels)
 
 sum(diag(table(svm.prediction, test_labels))) / length(test_labels)
+
+
+
+
