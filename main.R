@@ -37,18 +37,9 @@ evaluate_model(pred.nb$nb.predicted, test_labels)
 # ====
 # SVM 
 
-#library(e1071)
-
-#x_tran <- dfm_trim(train_bow, min_docfreq = 0.05, max_docfreq = 0.9)
-x_test <- as.data.frame(dfm_select(create_bow(test_corpus), x_tran))
-
-#x_tran <- convert(x_tran, "data.frame")
-#x_tran$rotulo = train_labels
-
 model.svm <- support_vector_machines(train_bow, train_labels, test_corpus)
 
-#svm.model <- svm(rotulo ~ ., data = x_tran, type = "C-classification")
-svm.prediction <- predict(model.svm, newdata = x_test)
+svm.prediction <- predict(model.svm$model_svm, newdata = model.svm$dataset_test)
 
 table(svm.prediction, test_labels)
 
