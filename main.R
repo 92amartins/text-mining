@@ -35,16 +35,24 @@ pred.nb <- predict(model.nb, newdata = test_bow)
 evaluate_model(pred.nb$nb.predicted, test_labels)
 
 # ====
-# SVM 
+# SVM (Linear)
 
 model.svm <- support_vector_machines(train_bow, train_labels, test_corpus)
-
 svm.prediction <- predict(model.svm$model_svm, newdata = model.svm$dataset_test)
-
-table(svm.prediction, test_labels)
+tab <- table(pred = svm.prediction, true = test_labels)
+head(tab)
 
 sum(diag(table(svm.prediction, test_labels))) / length(test_labels)
 
+# ====
+# SVM (Radial)
 
+model.svmRadial <- support_vector_machines(train_bow, train_labels, test_corpus, 
+                                     cost_parameter = 1000, gamma_parameter = 0.0001)
 
+svmRadial.prediction <- predict(model.svmRadial$model_svm, newdata = 
+                                  model.svmRadial$dataset_test)
+tab <- table(pred = svmRadial.prediction, true = test_labels)
+head(tab)
 
+sum(diag(table(svmRadial.prediction, test_labels))) / length(test_labels)
