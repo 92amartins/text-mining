@@ -1,12 +1,10 @@
 source("clean/get_corpus.R")
 source("clean/create_bow.R")
 source("model/naive_bayes.R")
-source("model/evaluate_model.R")
-source("model/support_vector_machines.R")
+source("model/support_vector_machine.R")
+source("eval/evaluate_model.R")
 
 SPAM_PATH <- "./data/spamassassin/*"
-
-set.seed(2017)
 
 # Read texts
 spam_corpus <- get_corpus(SPAM_PATH)
@@ -28,31 +26,23 @@ test_bow <- dfm_select(create_bow(test_corpus), train_bow)
 # ====
 # Naive Bayes 
 
-model.nb <- naive_bayes(train_bow, train_labels, test_bow)
-
+model.nb <- naive_bayes(train_bow, train_labels)
 pred.nb <- predict(model.nb, newdata = test_bow)
-
 evaluate_model(pred.nb$nb.predicted, test_labels)
 
 # ====
 # SVM (Linear)
 
-model.svm <- support_vector_machines(train_bow, train_labels, test_corpus)
+model.svm <- support_vector_machine(train_bow, train_labels, test_corpus)
 svm.prediction <- predict(model.svm$model_svm, newdata = model.svm$dataset_test)
-tab <- table(pred = svm.prediction, true = test_labels)
-head(tab)
-
-sum(diag(table(svm.prediction, test_labels))) / length(test_labels)
+evaluate_model(svm.prediction, test_labels)
 
 # ====
 # SVM (Radial)
 
-model.svmRadial <- support_vector_machines(train_bow, train_labels, test_corpus, 
-                                     cost_parameter = 1000, gamma_parameter = 0.0001)
-
-svmRadial.prediction <- predict(model.svmRadial$model_svm, newdata = 
-                                  model.svmRadial$dataset_test)
-tab <- table(pred = svmRadial.prediction, true = test_labels)
-head(tab)
-
-sum(diag(table(svmRadial.prediction, test_labels))) / length(test_labels)
+model.svmRadial <- support_vector_machine(train_bow, train_labels, test_corpus,
+                                           cost_parameter = 1000,
+                                           gamma_parameter = 0.0001)
+svmRadial.prediction <- predict(model.svmRadial$model_svm, 
+                                newdata = model.svmRadial$dataset_test)
+evaluate_model(svmRadial.prediction, test_labels)
