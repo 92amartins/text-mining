@@ -1,6 +1,8 @@
-support_vector_machines <- function(train_bow, train_labels, test_corpus, cost_parameter, gamma_parameter){
-  library(e1071)
-  
+library(e1071)
+
+support_vector_machine <- function(train_bow, train_labels, test_corpus, 
+                                   cost_parameter, 
+                                   gamma_parameter){
   # Preparing the data
   dataset_tran <- dfm_trim(train_bow, min_docfreq = 0.05, max_docfreq = 0.9)
   dataset_test <- as.data.frame(dfm_select(create_bow(test_corpus), dataset_tran))
